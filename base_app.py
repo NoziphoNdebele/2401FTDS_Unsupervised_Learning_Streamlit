@@ -1,5 +1,56 @@
-# Streamlit dependencies
+# Import necessary libraries
 import streamlit as st
+import pandas as pd
+
+# import pickle
+import joblib
+
+# Placeholder for loading your model and vectorizer
+# animes_dict = pickle.load(open('models/animes_dict.pkl','rb'))
+
+# Placeholder DataFrame for anime data
+anime_df = pd.DataFrame({
+    'name': ['Naruto', 'One Piece', 'Attack on Titan', 'My Hero Academia', 'Sword Art Online'],
+    'genre': ['Action', 'Adventure', 'Action', 'Action', 'Adventure'],
+    'rating': [8.5, 8.8, 9.1, 8.2, 7.9],
+    'members': [1000000, 950000, 890000, 870000, 820000]
+})
+
+# Placeholder for recommendation indices
+rec_indices = {anime: idx for idx, anime in enumerate(anime_df['name'])}
+
+# Placeholder for sigmoid kernel
+sig = [[1, 0.9, 0.8, 0.7, 0.6],
+       [0.9, 1, 0.85, 0.75, 0.65],
+       [0.8, 0.85, 1, 0.78, 0.68],
+       [0.7, 0.75, 0.78, 1, 0.77],
+       [0.6, 0.65, 0.68, 0.77, 1]]
+
+# Recommendation Function
+def give_recommendation(title, sig=sig):
+    # Get the index corresponding to the provided anime title
+    idx = rec_indices[title]
+
+    # Calculate pairwise similarity scores using sigmoid kernel
+    sig_score = list(enumerate(sig[idx]))
+
+    # Sort the similarity scores in descending order
+    sig_score = sorted(sig_score, key=lambda x: x[1], reverse=True)
+
+    # Keep the top 10 most similar animes (excluding itself)
+    sig_score = sig_score[1:6]
+    anime_indices = [i[0] for i in sig_score]
+
+    # Create a DataFrame with the top 10 similar animes
+    rec_dic = {
+        "No": range(1, 6),
+        "Anime Name": anime_df["name"].iloc[anime_indices].values,
+        "Rating": anime_df["rating"].iloc[anime_indices].values
+    }
+    dataframe = pd.DataFrame(data=rec_dic)
+    dataframe.set_index("No", inplace=True)
+
+    return dataframe.style.set_properties(**{"background-color": "#2a9d8f", "color": "white", "border": "1.5px solid black"})
 
 # The main function where we will build the actual app
 def main():
@@ -8,11 +59,11 @@ def main():
     # Creates a main title and subheader on your page -
     # these are static across all pages
     st.title("Anime Recommender System")
-    st.subheader("Building an anime recommendation system")
+
 
     # Creating sidebar with selection box -
     # you can create multiple pages this way
-    options = ["Project Overview", "How Recommender Systems Work", "Team Members"]
+    options = ["Project Overview", "How Recommender Systems Work", "Recommendation Engine", "Team Members"]
     selection = st.sidebar.selectbox("Choose Option", options)
 
     # Building out the "Project Overview" page
@@ -47,6 +98,31 @@ def main():
         Here, \( r_{ui} \) is the true rating given by user \( u \) to anime \( i \), and \( \hat{r}_{ui} \) is the predicted rating.
         """)
 
+
+    # Building out the "Recommendation Engine" page
+    elif selection == "Recommendation Engine":
+        
+
+        # Title
+        st.title('Anime Recommendation Engine')
+
+        # Search Box
+        selected_anime = st.selectbox(
+            'Which anime did you like?',
+            (anime_df['name'].values))
+
+        # Recommendation Button
+        if st.button('Recommend'):
+            with st.spinner(text='In progress'):
+                user_input = selected_anime
+                if user_input:
+                    recommendations = give_recommendation(user_input)
+                    st.subheader(f"Top 10 Recommendations for {selected_anime}")
+                    st.table(recommendations)
+
+                    selected_anime_details = anime_df[anime_df['name'] == selected_anime][['name', 'genre', 'rating', 'members']]
+                    st.table(selected_anime_details)
+
     # Building out the "Team Members" page
     elif selection == "Team Members":
         st.info("Team Members")
@@ -64,3 +140,4 @@ def main():
 # Required to let Streamlit instantiate our web app.
 if __name__ == '__main__':
     main()
+
