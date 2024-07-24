@@ -2,9 +2,6 @@
 import streamlit as st
 import pandas as pd
 
-# import pickle
-import joblib
-
 # Placeholder for loading your model and vectorizer
 # animes_dict = pickle.load(open('models/animes_dict.pkl','rb'))
 
@@ -60,11 +57,10 @@ def main():
     # these are static across all pages
     st.title("Anime Recommender System")
 
-
     # Creating sidebar with selection box -
     # you can create multiple pages this way
-    options = ["Project Overview", "How Recommender Systems Work", "Recommendation Engine", "Team Members"]
-    selection = st.sidebar.selectbox("Choose Option", options)
+    options = ["Project Overview", "How Recommender Systems Work", "Recommendation Engine", "EDA", "Team Members"]
+    selection = st.sidebar.selectbox("Navigation", options)
 
     # Building out the "Project Overview" page
     if selection == "Project Overview":
@@ -98,13 +94,13 @@ def main():
         Here, \( r_{ui} \) is the true rating given by user \( u \) to anime \( i \), and \( \hat{r}_{ui} \) is the predicted rating.
         """)
 
-
     # Building out the "Recommendation Engine" page
     elif selection == "Recommendation Engine":
-        
-
         # Title
         st.title('Anime Recommendation Engine')
+
+        # Display the image
+        st.image('Anime.png', caption='Anime Recommendation Engine')
 
         # Search Box
         selected_anime = st.selectbox(
@@ -123,6 +119,28 @@ def main():
                     selected_anime_details = anime_df[anime_df['name'] == selected_anime][['name', 'genre', 'rating', 'members']]
                     st.table(selected_anime_details)
 
+    # Building out the "EDA" page
+    elif selection == "EDA":
+        st.info("Exploratory Data Analysis (EDA)")
+        st.markdown("""
+        Exploratory Data Analysis is the process of examining a dataset to understand its main characteristics, structure, patterns, and relationships. It often uses visual methods to gain insights, detect anomalies, and check assumptions before applying machine learning models.
+        
+        EDA helps us understand the data better by uncovering patterns, relationships, and anomalies. 
+        For non-tech people, here's how EDA helps in this project:
+        """)
+
+        st.markdown("### Average Rating by Type")
+        st.image('Avg_rating_by_type.png', caption='Average Rating by Type')
+
+        st.markdown("### Distribution of Members by Type")
+        st.image('Dis_of_members_by_type.png', caption='Distribution of Members by Type')
+
+        st.markdown("### Top Anime by Popularity")
+        st.image('Top_anime_by_popularity.png', caption='Top Anime by Popularity')
+
+        st.markdown("### Top Anime by Rating")
+        st.image('Top_anime_by_rating.png', caption='Top Anime by Rating')
+
     # Building out the "Team Members" page
     elif selection == "Team Members":
         st.info("Team Members")
@@ -130,9 +148,9 @@ def main():
         Meet the team members working on this project:
 
         - **Akhona Nzama**
-        - **Nozipho Ndebele**
         - **Keneilwe Madihlaba**
         - **Koketso Bambo**
+        - **Nozipho Ndebele**
         - **Sibukiso Nhlengethwa**
         - **Tikedzani Vele**
         """)
