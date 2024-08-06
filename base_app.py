@@ -76,7 +76,6 @@ def hybrid_recommendations(user_id, anime_title, N=5):
     # Ensure unique index
     combined_recs.index = range(len(combined_recs))
     
-    # Apply styling separately before returning
     return combined_recs
 
 # The main function where we will build the actual app
@@ -84,10 +83,20 @@ def main():
     """Anime Recommender System Info App with Streamlit"""
 
     st.title("Anime Recommender System")
-    options = ["Project Overview", "How Recommender Systems Work", "Recommendation Engine", "EDA", "Team Members"]
+    options = ["Home", "Project Overview", "How Recommender Systems Work", "Recommendation Engine", "EDA", "Team Members"]
     selection = st.sidebar.selectbox("Navigation", options)
 
-    if selection == "Project Overview":
+    if selection == "Home":
+        st.image('homeanime.webp', use_column_width=True)
+        st.markdown("""
+        Welcome to our Anime Recommender System
+                    
+        Discover your next favorite show with us!
+                    
+        Our system provides personalized recommendations based on your preferences, helping you explore the world of anime.
+        """)
+
+    elif selection == "Project Overview":
         st.info("Project Overview")
         st.markdown("""
         In today’s technology-driven world, recommender systems are critical for helping users find relevant content.
